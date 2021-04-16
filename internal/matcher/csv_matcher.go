@@ -5,7 +5,6 @@ import (
 	"encoding/csv"
 	"encoding/hex"
 	"fmt"
-	"github.com/ribeirohugo/go_md5_matcher/internal/fault"
 	"log"
 	"os"
 	"strings"
@@ -31,9 +30,7 @@ type CsvMatcher struct {
 // Instantiate a new CsvMatcher struct
 // Insert a CsvFile for the non encoded data
 // Insert a CsvFile for Csv MD5 encoded data to check matches
-func NewCsvMatcher(dataCsv CsvFile, encodedCsv CsvFile) CsvMatcher {
-	timer := fault.RealTimer{}
-	outputPath := fmt.Sprintf("%d.csv", timer.Now())
+func NewCsvMatcher(dataCsv CsvFile, encodedCsv CsvFile, outputPath string) CsvMatcher {
 
 	return CsvMatcher{
 		dataCsv:    dataCsv,
