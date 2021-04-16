@@ -23,7 +23,7 @@ matcher.CsvFile{
 ### 2.1. Instantiate Csv Matcher
 
 Instantiate a Csv Matcher by running ``NewCsvMatcher`` method.
-Insert two ``CsvFile`` structs: one for 
+Insert two ``CsvFile`` structs: one for Csv data file; and the other one for the encoded data Csv.
 
 ```
 matcher.NewCsvMatcher(
@@ -49,3 +49,5 @@ matchStruct := matcher.NewCsvMatcher( [...] )
 
 err := matchstruct.Match()
 ```
+
+It will generate a new Csv file with the data file rows that matched with the encoded ones.
