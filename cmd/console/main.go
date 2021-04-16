@@ -1,8 +1,6 @@
 package main
 
 import (
-	"log"
-
 	"github.com/ribeirohugo/go_md5_matcher/internal/fault"
 	"github.com/ribeirohugo/go_md5_matcher/internal/matcher"
 )
@@ -16,21 +14,23 @@ const (
 )
 
 func main() {
-	csvMatcher := matcher.NewCsvMatcher(dataFilePath, dataFileColumn, delimiter, encodedFilePath, encodedFileColumn, delimiter)
 
-	err := csvMatcher.Open()
+	dataCsv := matcher.CsvFile{
+		Delimiter:   delimiter,
+		FilePath:    dataFilePath,
+		MatchColumn: dataFileColumn,
+	}
+
+	encodedCsv := matcher.CsvFile{
+		Delimiter:   delimiter,
+		FilePath:    encodedFilePath,
+		MatchColumn: encodedFileColumn,
+	}
+
+	csvMatcher := matcher.NewCsvMatcher(dataCsv, encodedCsv)
+
+	err := csvMatcher.Match()
 	if err != nil {
 		fault.HandleError(err)
 	}
-
-	matched, err := csvMatcher.Match()
-	if err != nil {
-		fault.HandleError(err)
-	}
-
-	log.Println(matched)
-
-	errData, errEncoded := csvMatcher.Close()
-	fault.HandleFatalError(errData)
-	fault.HandleFatalError(errEncoded)
 }

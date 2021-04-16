@@ -4,78 +4,91 @@ import (
 	"crypto/md5"
 	"encoding/csv"
 	"encoding/hex"
+	"fmt"
+	"github.com/ribeirohugo/go_md5_matcher/internal/fault"
 	"log"
 	"os"
 	"strings"
 )
 
+const outputDelimiter = ';'
+
 type CsvFile struct {
 	Delimiter   rune
 	FilePath    string
 	MatchColumn int
+
+	file   *os.File
+	reader *csv.Reader
 }
 
 type CsvMatcher struct {
-	dataCsv       CsvFile
-	encodedCsv    CsvFile
-	dataFile      *os.File
-	encodedFile   *os.File
-	dataReader    *csv.Reader
-	encodedReader *csv.Reader
+	dataCsv    CsvFile
+	encodedCsv CsvFile
+	writerCsv  CsvWriter
 }
 
-func NewCsvMatcher(dataFile string, dataColumn int, dataDelimiter rune, encodedFile string, encodedColumn int, encodedDelimiter rune) CsvMatcher {
-	return CsvMatcher{
-		dataCsv: CsvFile{
-			Delimiter:   dataDelimiter,
-			FilePath:    dataFile,
-			MatchColumn: dataColumn,
-		},
+func NewCsvMatcher(dataCsv CsvFile, encodedCsv CsvFile) CsvMatcher {
+	timer := fault.RealTimer{}
+	outputPath := fmt.Sprintf("%d.csv", timer.Now())
 
-		encodedCsv: CsvFile{
-			Delimiter:   encodedDelimiter,
-			FilePath:    encodedFile,
-			MatchColumn: encodedColumn,
+	return CsvMatcher{
+		dataCsv:    dataCsv,
+		encodedCsv: encodedCsv,
+		writerCsv: CsvWriter{
+			csv: CsvFile{
+				Delimiter: outputDelimiter,
+				FilePath:  outputPath,
+			},
 		},
 	}
 }
 
-func (m *CsvMatcher) Open() error {
+func (m *CsvMatcher) open() error {
 	var err error
 
-	m.dataFile, err = os.Open(m.dataCsv.FilePath)
+	m.dataCsv.file, err = os.Open(m.dataCsv.FilePath)
 	if err != nil {
 		return err
 	}
 
-	m.dataReader = csv.NewReader(m.dataFile)
-	m.dataReader.Comma = m.dataCsv.Delimiter
+	m.dataCsv.reader = csv.NewReader(m.dataCsv.file)
+	m.dataCsv.reader.Comma = m.dataCsv.Delimiter
 
-	m.encodedFile, err = os.Open(m.encodedCsv.FilePath)
+	m.encodedCsv.file, err = os.Open(m.encodedCsv.FilePath)
 	if err != nil {
 		return err
 	}
 
-	m.encodedReader = csv.NewReader(m.encodedFile)
-	m.encodedReader.Comma = m.encodedCsv.Delimiter
+	m.encodedCsv.reader = csv.NewReader(m.encodedCsv.file)
+	m.encodedCsv.reader.Comma = m.encodedCsv.Delimiter
+
+	err = m.writerCsv.open()
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
 
-func (m *CsvMatcher) Match() ([][]string, error) {
-	var result [][]string
+func (m *CsvMatcher) Match() error {
 
-	dataLines, err := m.dataReader.ReadAll()
+	err := m.open()
 	if err != nil {
-		return result, err
+		return err
 	}
 
-	encodedLines, err := m.encodedReader.ReadAll()
+	dataLines, err := m.dataCsv.reader.ReadAll()
 	if err != nil {
-		return result, err
+		return err
 	}
 
-	for _, encodedLine := range encodedLines {
+	encodedLines, err := m.encodedCsv.reader.ReadAll()
+	if err != nil {
+		return err
+	}
+
+	for i, encodedLine := range encodedLines {
 		field := encodedLine[m.encodedCsv.MatchColumn]
 
 		if field != "" {
@@ -84,21 +97,28 @@ func (m *CsvMatcher) Match() ([][]string, error) {
 				dataEncoded := md5Convert(dataLine[m.dataCsv.MatchColumn])
 
 				if field == dataEncoded {
-					log.Println(field, " = ", dataEncoded)
-					log.Println(dataLine)
-					result = append(result, encodedLine)
+					logger := fmt.Sprintf("line %d: %s = %s", i, field, dataEncoded)
+					log.Println(logger)
+
+					err = m.writerCsv.write(dataLine)
+					if err != nil {
+						return err
+					}
+					m.writerCsv.writer.Flush()
 					break
 				}
 			}
 		}
 	}
-	return result, nil
-}
 
-func (m *CsvMatcher) Close() (error, error) {
-	dataError := m.dataFile.Close()
-	encodedError := m.encodedFile.Close()
-	return dataError, encodedError
+	err = m.dataCsv.file.Close()
+	if err != nil {
+		return err
+	}
+
+	err = m.encodedCsv.file.Close()
+
+	return err
 }
 
 func md5Convert(field string) string {
