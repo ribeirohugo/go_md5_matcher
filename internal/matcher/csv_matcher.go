@@ -18,20 +18,22 @@ type CsvFile struct {
 type CsvMatcher struct {
 	dataCsv       CsvFile
 	encodedCsv    CsvFile
+	dataFile      *os.File
+	encodedFile   *os.File
 	dataReader    *csv.Reader
 	encodedReader *csv.Reader
 }
 
-func NewCsvMatcher(dataFile string, dataColumn int, encodedFile string, encodedColumn int, delimiter rune) CsvMatcher {
+func NewCsvMatcher(dataFile string, dataColumn int, dataDelimiter rune, encodedFile string, encodedColumn int, encodedDelimiter rune) CsvMatcher {
 	return CsvMatcher{
 		dataCsv: CsvFile{
-			Delimiter:   delimiter,
+			Delimiter:   dataDelimiter,
 			FilePath:    dataFile,
 			MatchColumn: dataColumn,
 		},
 
 		encodedCsv: CsvFile{
-			Delimiter:   delimiter,
+			Delimiter:   encodedDelimiter,
 			FilePath:    encodedFile,
 			MatchColumn: encodedColumn,
 		},
@@ -39,21 +41,22 @@ func NewCsvMatcher(dataFile string, dataColumn int, encodedFile string, encodedC
 }
 
 func (m *CsvMatcher) Open() error {
+	var err error
 
-	csvFile, err := os.Open(m.dataCsv.FilePath)
+	m.dataFile, err = os.Open(m.dataCsv.FilePath)
 	if err != nil {
 		return err
 	}
 
-	m.dataReader = csv.NewReader(csvFile)
+	m.dataReader = csv.NewReader(m.dataFile)
 	m.dataReader.Comma = m.dataCsv.Delimiter
 
-	md5File, err := os.Open(m.encodedCsv.FilePath)
+	m.encodedFile, err = os.Open(m.encodedCsv.FilePath)
 	if err != nil {
 		return err
 	}
 
-	m.encodedReader = csv.NewReader(md5File)
+	m.encodedReader = csv.NewReader(m.encodedFile)
 	m.encodedReader.Comma = m.encodedCsv.Delimiter
 
 	return nil
@@ -89,8 +92,13 @@ func (m *CsvMatcher) Match() ([][]string, error) {
 			}
 		}
 	}
-
 	return result, nil
+}
+
+func (m *CsvMatcher) Close() (error, error) {
+	dataError := m.dataFile.Close()
+	encodedError := m.encodedFile.Close()
+	return dataError, encodedError
 }
 
 func md5Convert(field string) string {
