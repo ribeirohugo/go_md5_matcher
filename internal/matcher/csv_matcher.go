@@ -28,6 +28,9 @@ type CsvMatcher struct {
 	writerCsv  CsvWriter
 }
 
+// Instantiate a new CsvMatcher struct
+// Insert a CsvFile for the non encoded data
+// Insert a CsvFile for Csv MD5 encoded data to check matches
 func NewCsvMatcher(dataCsv CsvFile, encodedCsv CsvFile) CsvMatcher {
 	timer := fault.RealTimer{}
 	outputPath := fmt.Sprintf("%d.csv", timer.Now())
@@ -71,6 +74,7 @@ func (m *CsvMatcher) open() error {
 	return nil
 }
 
+// Run Match to find field matches between Csv data file and Csv MD5 encoded data file
 func (m *CsvMatcher) Match() error {
 
 	err := m.open()
