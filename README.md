@@ -29,13 +29,15 @@ Insert two ``CsvFile`` structs: one for Csv data file; and the other one for the
 matcher.NewCsvMatcher(
     matcher.CsvFile{
         Delimiter: ';',
-        FilePath: 'data.csv',
+        FilePath: "data.csv",
         MatchColumn: 3,
+        StartLine: 1,
     },
     matcher.CsvFile{
         Delimiter: ';',
-        FilePath: 'md5.csv',
+        FilePath: "md5.csv",
         MatchColumn: 2,
+        StartLine: 1,
     }
 )
 ```
