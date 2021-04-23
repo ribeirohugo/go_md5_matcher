@@ -14,6 +14,7 @@ const (
 	encodedFilePath   = "md5.csv"
 	encodedFileColumn = 2
 	delimiter         = ';'
+	startLine         = 0
 )
 
 func main() {
