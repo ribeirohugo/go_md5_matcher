@@ -16,6 +16,7 @@ type CsvFile struct {
 	Delimiter   rune
 	FilePath    string
 	MatchColumn int
+	StartLine   int
 
 	file   *os.File
 	reader *csv.Reader
@@ -90,19 +91,21 @@ func (m *CsvMatcher) Match() error {
 		return err
 	}
 
-	for i, encodedLine := range encodedLines {
-		field := encodedLine[m.encodedCsv.MatchColumn]
+	dataLength := len(dataLines)
+	encodedLength := len(encodedLines)
+	for i := m.encodedCsv.StartLine; i < encodedLength; i++ {
+		field := encodedLines[i][m.encodedCsv.MatchColumn]
 
 		if field != "" {
-			for _, dataLine := range dataLines {
+			for i := m.dataCsv.StartLine; i < dataLength; i++ {
 				field = strings.ToLower(field)
-				dataEncoded := md5Convert(dataLine[m.dataCsv.MatchColumn])
+				dataEncoded := md5Convert(dataLines[i][m.dataCsv.MatchColumn])
 
 				if field == dataEncoded {
 					logger := fmt.Sprintf("line %d: %s = %s", i, field, dataEncoded)
 					log.Println(logger)
 
-					err = m.writerCsv.write(dataLine)
+					err = m.writerCsv.write(dataLines[i])
 					if err != nil {
 						return err
 					}
