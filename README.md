@@ -15,6 +15,7 @@ Configurations must be loaded by setting values at ``config.toml`` in the main p
 | Parameter | Description | Type | Default | Required |
 |:---|:---|:---|:---|:---|
 | ``encoded_column`` | Encoded column field to be added into the output file. | `int` | `-1` | **NO** |
+| ``output_name`` | Output file name with match results. | `string` | `<current_timestamp>.csv` | **NO** |
 | ``[data_csv]`` | Add a ``CsvFile`` config concerning the following topic. | `CsvFile` | ` ` | **YES** |
 | ``[data_encoded]`` | Add a ``CsvFile`` config concerning the following topic. | `CsvFile` | ` ` | **YES** |
 
@@ -57,7 +58,9 @@ matcher.NewCsvMatcher(
         FilePath: "md5.csv",
         MatchColumn: 2,
         StartLine: 1,
-    }
+    },
+    "fileName.csv",
+    0
 )
 ```
 

@@ -95,13 +95,14 @@ func (m *CsvMatcher) Match() error {
 
 	dataLength := len(dataLines)
 	encodedLength := len(encodedLines)
+
 	for i := m.encodedCsv.StartLine; i < encodedLength; i++ {
 		field := encodedLines[i][m.encodedCsv.MatchColumn]
 
 		if field != "" {
-			for i := m.dataCsv.StartLine; i < dataLength; i++ {
+			for j := m.dataCsv.StartLine; j < dataLength; j++ {
 				field = strings.ToLower(field)
-				dataEncoded := md5Convert(dataLines[i][m.dataCsv.MatchColumn])
+				dataEncoded := md5Convert(dataLines[j][m.dataCsv.MatchColumn])
 
 				if field == dataEncoded {
 					logger := fmt.Sprintf("line %d: %s = %s", i, field, dataEncoded)
@@ -112,7 +113,7 @@ func (m *CsvMatcher) Match() error {
 						encodedColumn = encodedLines[i][m.encodedColumn]
 					}
 
-					err = m.writerCsv.write(dataLines[i], encodedColumn)
+					err = m.writerCsv.write(dataLines[j], encodedColumn)
 					if err != nil {
 						return err
 					}
