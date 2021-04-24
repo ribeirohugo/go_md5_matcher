@@ -30,7 +30,7 @@ func main() {
 		MatchColumn: cfg.EncodedCsv.MatchColumn,
 	}
 
-	csvMatcher := matcher.NewCsvMatcher(dataCsv, encodedCsv, outputName)
+	csvMatcher := matcher.NewCsvMatcher(dataCsv, encodedCsv, outputName, cfg.EncodedColumn)
 
 	err = csvMatcher.Match()
 	if err != nil {

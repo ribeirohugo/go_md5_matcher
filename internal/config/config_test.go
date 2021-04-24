@@ -6,7 +6,8 @@ import (
 	"testing"
 )
 
-var configContent = `[data_csv]
+var configContent = `encoded_column = 0
+[data_csv]
 field_delimiter = ";"
 file_path = "data.csv"
 match_column = 1
@@ -20,13 +21,13 @@ start_line = 1
 `
 
 var configTest = Config{
-	DataCsv: Csv{
+	DataCsv: CsvFile{
 		Delimiter:   ';',
 		FilePath:    "data.csv",
 		MatchColumn: 1,
 		StartLine:   1,
 	},
-	EncodedCsv: Csv{
+	EncodedCsv: CsvFile{
 		Delimiter:   ';',
 		FilePath:    "md5.csv",
 		MatchColumn: 1,
@@ -47,7 +48,6 @@ func TestConfig(t *testing.T) {
 	}
 
 	tempFile.Close()
-
 }
 
 func createTempFile() (*os.File, error) {

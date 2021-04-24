@@ -9,6 +9,7 @@ import (
 const (
 	delimiter      = ';'
 	dataCsvName    = "data.csv"
+	encodedColumn  = 0
 	encodedCsvName = "md5.csv"
 	outputCsvName  = "output.csv"
 )
@@ -21,8 +22,8 @@ var encodedFile = `202cb962ac59075b964b07152d234b70;202cb962ac59075b964b07152d23
 202cb962ac59075b964b07152d234b70;202cb962ac59075b964b07152d234b70
 `
 
-var outputFile = `123;123
-123;123
+var outputFile = `202cb962ac59075b964b07152d234b70;123;123
+202cb962ac59075b964b07152d234b70;123;123
 `
 
 func TestNewCsvMatcher(t *testing.T) {
@@ -54,7 +55,7 @@ func TestNewCsvMatcher(t *testing.T) {
 		MatchColumn: 1,
 	}
 
-	matcher := NewCsvMatcher(dataCsv, encodedCsv, outputFileName)
+	matcher := NewCsvMatcher(dataCsv, encodedCsv, outputFileName, encodedColumn)
 
 	expected := CsvMatcher{
 		dataCsv: CsvFile{

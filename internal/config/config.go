@@ -8,7 +8,7 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
-type Csv struct {
+type CsvFile struct {
 	Delimiter   rune
 	FilePath    string `toml:"file_path"`
 	MatchColumn int    `toml:"match_column"`
@@ -18,8 +18,9 @@ type Csv struct {
 }
 
 type Config struct {
-	DataCsv    Csv `toml:"data_csv"`
-	EncodedCsv Csv `toml:"encoded_csv"`
+	DataCsv       CsvFile `toml:"data_csv"`
+	EncodedCsv    CsvFile `toml:"encoded_csv"`
+	EncodedColumn int     `toml:"encoded_column"`
 }
 
 func Load(filePath string) (Config, error) {
@@ -35,10 +36,11 @@ func Load(filePath string) (Config, error) {
 	_ = file.Close()
 
 	config := Config{
-		DataCsv: Csv{
+		EncodedColumn: -1,
+		DataCsv: CsvFile{
 			Delimiter: ';',
 		},
-		EncodedCsv: Csv{
+		EncodedCsv: CsvFile{
 			Delimiter: ';',
 		},
 	}
