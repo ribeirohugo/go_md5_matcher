@@ -23,19 +23,21 @@ type CsvFile struct {
 }
 
 type CsvMatcher struct {
-	dataCsv    CsvFile
-	encodedCsv CsvFile
-	writerCsv  CsvWriter
+	dataCsv       CsvFile
+	encodedCsv    CsvFile
+	encodedColumn int
+	writerCsv     CsvWriter
 }
 
 // Instantiate a new CsvMatcher struct
 // Insert a CsvFile for the non encoded data
 // Insert a CsvFile for Csv MD5 encoded data to check matches
-func NewCsvMatcher(dataCsv CsvFile, encodedCsv CsvFile, outputPath string) CsvMatcher {
+func NewCsvMatcher(dataCsv CsvFile, encodedCsv CsvFile, outputPath string, encodedColumn int) CsvMatcher {
 
 	return CsvMatcher{
-		dataCsv:    dataCsv,
-		encodedCsv: encodedCsv,
+		dataCsv:       dataCsv,
+		encodedCsv:    encodedCsv,
+		encodedColumn: encodedColumn,
 		writerCsv: CsvWriter{
 			csv: CsvFile{
 				Delimiter: outputDelimiter,
@@ -105,7 +107,12 @@ func (m *CsvMatcher) Match() error {
 					logger := fmt.Sprintf("line %d: %s = %s", i, field, dataEncoded)
 					log.Println(logger)
 
-					err = m.writerCsv.write(dataLines[i])
+					encodedColumn := ""
+					if m.encodedColumn >= 0 {
+						encodedColumn = encodedLines[i][m.encodedColumn]
+					}
+
+					err = m.writerCsv.write(dataLines[i], encodedColumn)
 					if err != nil {
 						return err
 					}
