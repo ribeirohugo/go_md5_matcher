@@ -7,6 +7,8 @@ import (
 )
 
 var configContent = `encoded_column = 0
+output_name = "testFile.csv"
+
 [data_csv]
 field_delimiter = ";"
 file_path = "data.csv"
@@ -33,6 +35,7 @@ var configTest = Config{
 		MatchColumn: 1,
 		StartLine:   1,
 	},
+	OutputName: "testFile.csv",
 }
 
 func TestConfig(t *testing.T) {

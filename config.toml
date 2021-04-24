@@ -1,3 +1,6 @@
+encoded_column = 1
+output_name = "teste.csv"
+
 [data_csv]
 field_delimiter = ";"
 file_path = "data.csv"

@@ -1,11 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"github.com/ribeirohugo/go_md5_matcher/internal/config"
 	"github.com/ribeirohugo/go_md5_matcher/internal/fault"
 	"github.com/ribeirohugo/go_md5_matcher/internal/matcher"
-	"time"
 )
 
 const (
@@ -15,8 +13,6 @@ const (
 func main() {
 	cfg, err := config.Load(configFile)
 	fault.HandleFatalError(err)
-
-	outputName := fmt.Sprintf("%d.csv", time.Now().Unix())
 
 	dataCsv := matcher.CsvFile{
 		Delimiter:   cfg.DataCsv.Delimiter,
@@ -30,7 +26,7 @@ func main() {
 		MatchColumn: cfg.EncodedCsv.MatchColumn,
 	}
 
-	csvMatcher := matcher.NewCsvMatcher(dataCsv, encodedCsv, outputName, cfg.EncodedColumn)
+	csvMatcher := matcher.NewCsvMatcher(dataCsv, encodedCsv, cfg.OutputName, cfg.EncodedColumn)
 
 	err = csvMatcher.Match()
 	if err != nil {

@@ -1,8 +1,10 @@
 package config
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
+	"time"
 	"unicode/utf8"
 
 	"github.com/BurntSushi/toml"
@@ -21,6 +23,7 @@ type Config struct {
 	DataCsv       CsvFile `toml:"data_csv"`
 	EncodedCsv    CsvFile `toml:"encoded_csv"`
 	EncodedColumn int     `toml:"encoded_column"`
+	OutputName    string  `toml:"output_name"`
 }
 
 func Load(filePath string) (Config, error) {
@@ -43,6 +46,7 @@ func Load(filePath string) (Config, error) {
 		EncodedCsv: CsvFile{
 			Delimiter: ';',
 		},
+		OutputName: fmt.Sprintf("%d.csv", time.Now().Unix()),
 	}
 
 	err = toml.Unmarshal(bytes, &config)
