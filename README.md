@@ -57,7 +57,9 @@ matcher.NewCsvMatcher(
         FilePath: "md5.csv",
         MatchColumn: 2,
         StartLine: 1,
-    }
+    },
+    
+    0
 )
 ```
 
