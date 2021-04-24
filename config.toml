@@ -1,0 +1,11 @@
+[data_csv]
+field_delimiter = ";"
+file_path = "data.csv"
+match_column = 3
+start_line = 1
+
+[encoded_csv]
+field_delimiter = ";"
+file_path = "md5.csv"
+match_column = 2
+start_line = 1

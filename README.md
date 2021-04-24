@@ -8,7 +8,18 @@ Start application by running the following command:
 
 ``run ./cmd/console/main.go``
 
-## 2. Guidelines
+## 2. Configurations
+
+Configurations must be loaded by setting values at ``config.toml`` in the main project path.
+
+| Parameter | Description | Type | Default | Required |
+|:---|:---|:---|:---|:---|
+| ``field_delimiter`` | Field character that delimits row fields. Usually is ``;`` or ``,`` . | `string` | `;` | **NO** |
+| ``file_path`` | Csv file path. | `string` | ` ` | **YES** |
+| ``match_column`` | Csv file column that will be used as match comparison. Counting starts with ``0.`` | `int` | `0` | **NO** |
+| ``start_line`` | Csv line number that will be used to start comparison. Counting starts with ``0.`` | `int` | `0` | **NO** |
+
+## 3. Guidelines
 
 Instantiate ``CsvFile`` structs for the data CSV file and for the CSV file with the encoded fields.
 
@@ -20,7 +31,7 @@ matcher.CsvFile{
 }
 ```
 
-### 2.1. Instantiate Csv Matcher
+### 3.1. Instantiate Csv Matcher
 
 Instantiate a Csv Matcher by running ``NewCsvMatcher`` method.
 Insert two ``CsvFile`` structs: one for Csv data file; and the other one for the encoded data Csv.
@@ -42,7 +53,7 @@ matcher.NewCsvMatcher(
 )
 ```
 
-### 2.2. Run Matcher
+### 3.2. Run Matcher
 
 After instantiate a ``CsvMatcher`` struct, you may run ``Match()`` method as in the following excerpt.
 
