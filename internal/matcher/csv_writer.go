@@ -5,6 +5,7 @@ import (
 	"os"
 )
 
+// CsvWriter holds Csv writing data and configs.
 type CsvWriter struct {
 	csv CsvFile
 

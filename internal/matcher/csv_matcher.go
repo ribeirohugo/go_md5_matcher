@@ -12,6 +12,7 @@ import (
 
 const outputDelimiter = ';'
 
+// CsvFile holds Csv file data and reading configurations.
 type CsvFile struct {
 	Delimiter   rune
 	FilePath    string
@@ -22,6 +23,7 @@ type CsvFile struct {
 	reader *csv.Reader
 }
 
+// CsvMatcher wraps all data about Csv files, column and writer.
 type CsvMatcher struct {
 	dataCsv       CsvFile
 	encodedCsv    CsvFile
@@ -29,9 +31,9 @@ type CsvMatcher struct {
 	writerCsv     CsvWriter
 }
 
-// Instantiate a new CsvMatcher struct
-// Insert a CsvFile for the non encoded data
-// Insert a CsvFile for Csv MD5 encoded data to check matches
+// NewCsvMatcher instantiates a new CsvMatcher struct.
+// Insert a CsvFile for the non encoded data.
+// Insert a CsvFile for Csv MD5 encoded data to check matches.
 func NewCsvMatcher(dataCsv CsvFile, encodedCsv CsvFile, outputPath string, encodedColumn int) CsvMatcher {
 
 	return CsvMatcher{
@@ -74,7 +76,7 @@ func (m *CsvMatcher) open() error {
 	return nil
 }
 
-// Run Match to find field matches between Csv data file and Csv MD5 encoded data file
+// Match is run to find field matches between Csv data file and Csv MD5 encoded data file
 // It will generate a new Csv file with the data file rows that matched with the encoded ones.
 func (m *CsvMatcher) Match() error {
 
