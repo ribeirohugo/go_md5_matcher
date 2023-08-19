@@ -123,8 +123,6 @@ func createTempFile(name string, content string) (*os.File, error) {
 		return nil, err
 	}
 
-	defer os.Remove(tempFile.Name())
-
 	_, err = tempFile.WriteString(content)
 	if err != nil {
 		return nil, err

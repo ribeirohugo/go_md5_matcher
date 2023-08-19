@@ -134,7 +134,12 @@ func (m *CsvMatcher) Match() error {
 		return err
 	}
 
-	return err
+	err = m.writerCsv.close()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func md5Convert(field string) string {
