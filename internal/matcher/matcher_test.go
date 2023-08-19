@@ -26,7 +26,6 @@ var outputFile = `202cb962ac59075b964b07152d234b70;123;123
 `
 
 func TestNewCsvMatcher(t *testing.T) {
-
 	// Load Data CSV File
 	dataCsvFile, _ := createTempFile(dataCsvName, dataFile)
 	dataFileName := dataCsvFile.Name()
@@ -80,7 +79,6 @@ func TestNewCsvMatcher(t *testing.T) {
 	}
 
 	err := matcher.Match()
-
 	if err != nil {
 		t.Errorf("Error returned,\n got: %v,\n want: %v.", err, nil)
 	}
