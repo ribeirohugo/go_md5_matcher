@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/ribeirohugo/go_md5_matcher/internal/config"
-	"github.com/ribeirohugo/go_md5_matcher/internal/matcher"
+	"github.com/ribeirohugo/go_md5_matcher/config"
+	"github.com/ribeirohugo/go_md5_matcher/matcher"
 	"log"
 )
 
