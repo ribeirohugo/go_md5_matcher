@@ -35,25 +35,25 @@ jobs:
       - name: Clean
         run: go clean -modcache -v
 
-#  unit-test:
-#    name: Run unit tests
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - name: Install Go
-#        uses: actions/setup-go@v3
-#        with:
-#          go-version: 1.19
-#
-#      - name: Install mockgen
-#        run: go install github.com/golang/mock/mockgen@latest
-#
-#      - uses: actions/checkout@v3
-#      - name: Generate
-#        run: go generate ./...
-#
-#      - name: Test
-#        run: go test ./...
-#
-#      - name: Clean
-#        run: go clean -modcache -v
+  unit-test:
+    name: Run unit tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
+
+      - name: Install mockgen
+        run: go install github.com/golang/mock/mockgen@latest
+
+      - uses: actions/checkout@v3
+      - name: Generate
+        run: go generate ./...
+
+      - name: Test
+        run: go test ./...
+
+      - name: Clean
+        run: go clean -modcache -v
