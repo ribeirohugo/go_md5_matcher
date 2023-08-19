@@ -132,3 +132,13 @@ func createTempFile(name string, content string) (*os.File, error) {
 
 	return tempFile, nil
 }
+
+func closeFile(t *testing.T, file *os.File) {
+	t.Helper()
+
+	err := file.Close()
+	require.NoError(t, err)
+
+	err = os.Remove(file.Name())
+	require.NoError(t, err)
+}
