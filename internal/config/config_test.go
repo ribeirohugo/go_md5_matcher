@@ -1,7 +1,6 @@
 package config
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
 )
@@ -55,7 +54,7 @@ func TestConfig(t *testing.T) {
 
 func createTempFile() (*os.File, error) {
 
-	tempFile, err := ioutil.TempFile("", "config.toml")
+	tempFile, err := os.CreateTemp("", "config.toml")
 	if err != nil {
 		return nil, err
 	}

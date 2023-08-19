@@ -2,7 +2,7 @@ package config
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"time"
 	"unicode/utf8"
@@ -35,7 +35,7 @@ func Load(filePath string) (Config, error) {
 		return Config{}, err
 	}
 
-	bytes, err := ioutil.ReadAll(file)
+	bytes, err := io.ReadAll(file)
 	if err != nil {
 		return Config{}, err
 	}
