@@ -1,7 +1,6 @@
 package matcher
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
 )
@@ -27,7 +26,6 @@ var outputFile = `202cb962ac59075b964b07152d234b70;123;123
 `
 
 func TestNewCsvMatcher(t *testing.T) {
-
 	// Load Data CSV File
 	dataCsvFile, _ := createTempFile(dataCsvName, dataFile)
 	dataFileName := dataCsvFile.Name()
@@ -81,12 +79,11 @@ func TestNewCsvMatcher(t *testing.T) {
 	}
 
 	err := matcher.Match()
-
 	if err != nil {
 		t.Errorf("Error returned,\n got: %v,\n want: %v.", err, nil)
 	}
 
-	contentBytes, err := ioutil.ReadFile(outputFileName)
+	contentBytes, err := os.ReadFile(outputFileName)
 	content := string(contentBytes)
 	if err != nil {
 		t.Errorf("Error reading file %s", err)
@@ -102,8 +99,7 @@ func TestNewCsvMatcher(t *testing.T) {
 }
 
 func createTempFile(name string, content string) (*os.File, error) {
-
-	tempFile, err := ioutil.TempFile("", name)
+	tempFile, err := os.CreateTemp("", name)
 	if err != nil {
 		return nil, err
 	}

@@ -27,11 +27,6 @@ func (w *CsvWriter) open() error {
 	return nil
 }
 
-func (w *CsvWriter) close() error {
-	w.writer.Flush()
-	return w.file.Close()
-}
-
 func (w *CsvWriter) write(row []string, value string) error {
 	newRow := row
 
