@@ -12,21 +12,21 @@ Start application by running the following command:
 
 Configurations must be loaded by setting values at ``config.toml`` in the main project path.
 
-| Parameter | Description | Type | Default | Required |
-|:---|:---|:---|:---|:---|
-| ``encoded_column`` | Encoded column field to be added into the output file. | `int` | `-1` | **NO** |
-| ``output_name`` | Output file name with match results. | `string` | `<current_timestamp>.csv` | **NO** |
-| ``[data_csv]`` | Add a ``CsvFile`` config concerning the following topic. | `CsvFile` | ` ` | **YES** |
-| ``[data_encoded]`` | Add a ``CsvFile`` config concerning the following topic. | `CsvFile` | ` ` | **YES** |
+| Parameter          | Description                                              | Type      | Default                   | Required |
+|:-------------------|:---------------------------------------------------------|:----------|:--------------------------|:---------|
+| ``encoded_column`` | Encoded column field to be added into the output file.   | `int`     | `-1`                      | **NO**   |
+| ``output_name``    | Output file name with match results.                     | `string`  | `<current_timestamp>.csv` | **NO**   |
+| ``[data_csv]``     | Add a ``CsvFile`` config concerning the following topic. | `CsvFile` | ` `                       | **YES**  |
+| ``[data_encoded]`` | Add a ``CsvFile`` config concerning the following topic. | `CsvFile` | ` `                       | **YES**  |
 
 ### 2.1. Csv File
 
-| Parameter | Description | Type | Default | Required |
-|:---|:---|:---|:---|:---|
-| ``field_delimiter`` | Field character that delimits row fields. Usually is `;` or `,` . | `string` | `;` | **NO** |
-| ``file_path`` | Csv file path. | `string` | ` ` | **YES** |
-| ``match_column`` | Csv file column that will be used as match comparison. Counting starts with `0.` | `int` | `0` | **NO** |
-| ``start_line`` | Csv line number that will be used to start comparison. Counting starts with `0.` | `int` | `0` | **NO** |
+| Parameter           | Description                                                                      | Type     | Default | Required |
+|:--------------------|:---------------------------------------------------------------------------------|:---------|:--------|:---------|
+| ``field_delimiter`` | Field character that delimits row fields. Usually is `;` or `,` .                | `string` | `;`     | **NO**   |
+| ``file_path``       | Csv file path.                                                                   | `string` | ` `     | **YES**  |
+| ``match_column``    | Csv file column that will be used as match comparison. Counting starts with `0.` | `int`    | `0`     | **NO**   |
+| ``start_line``      | Csv line number that will be used to start comparison. Counting starts with `0.` | `int`    | `0`     | **NO**   |
 
 ## 3. Guidelines
 
