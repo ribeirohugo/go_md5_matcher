@@ -79,7 +79,6 @@ func (m *CsvMatcher) open() error {
 // Match is run to find field matches between Csv data file and Csv MD5 encoded data file
 // It will generate a new Csv file with the data file rows that matched with the encoded ones.
 func (m *CsvMatcher) Match() error {
-
 	err := m.open()
 	if err != nil {
 		return err
