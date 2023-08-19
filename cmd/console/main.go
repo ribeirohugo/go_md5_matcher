@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/ribeirohugo/go_md5_matcher/internal/config"
-	"github.com/ribeirohugo/go_md5_matcher/internal/fault"
 	"github.com/ribeirohugo/go_md5_matcher/internal/matcher"
+	"log"
 )
 
 const (
@@ -12,7 +12,9 @@ const (
 
 func main() {
 	cfg, err := config.Load(configFile)
-	fault.HandleFatalError(err)
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	dataCsv := matcher.CsvFile{
 		Delimiter:   cfg.DataCsv.Delimiter,
@@ -30,6 +32,6 @@ func main() {
 
 	err = csvMatcher.Match()
 	if err != nil {
-		fault.HandleError(err)
+		log.Fatalln(err)
 	}
 }

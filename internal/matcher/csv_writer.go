@@ -37,6 +37,11 @@ func (w *CsvWriter) write(row []string, value string) error {
 	return w.writer.Write(newRow)
 }
 
+func (w *CsvWriter) close() error {
+	w.writer.Flush()
+	return w.file.Close()
+}
+
 func prepend(row []string, value string) []string {
 	row = append(row, "")
 	copy(row[1:], row)

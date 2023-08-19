@@ -1,6 +1,8 @@
 package config
 
 import (
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"os"
 	"testing"
 )
@@ -21,50 +23,52 @@ match_column = 1
 start_line = 1
 `
 
-var configTest = Config{
-	DataCsv: CsvFile{
-		Delimiter:   ';',
-		FilePath:    "data.csv",
-		MatchColumn: 1,
-		StartLine:   1,
-	},
-	EncodedCsv: CsvFile{
-		Delimiter:   ';',
-		FilePath:    "md5.csv",
-		MatchColumn: 1,
-		StartLine:   1,
-	},
-	OutputName: "testFile.csv",
-}
-
-func TestConfig(t *testing.T) {
-
-	tempFile, _ := createTempFile()
-
-	defer os.Remove(tempFile.Name())
-
-	cfg, _ := Load(tempFile.Name())
-
-	if cfg != configTest {
-		t.Errorf("Wrong config file output,\n got: %v,\n want: %v.", cfg, configTest)
+func TestLoad(t *testing.T) {
+	expectedConfig := Config{
+		DataCsv: CsvFile{
+			Delimiter:   ';',
+			FilePath:    "data.csv",
+			MatchColumn: 1,
+			StartLine:   1,
+		},
+		EncodedCsv: CsvFile{
+			Delimiter:   ';',
+			FilePath:    "md5.csv",
+			MatchColumn: 1,
+			StartLine:   1,
+		},
+		OutputName: "testFile.csv",
 	}
 
-	tempFile.Close()
+	t.Run("with all fields", func(t *testing.T) {
+		tempFile := createTempFile(t, configContent)
+
+		cfg, err := Load(tempFile.Name())
+		require.NoError(t, err)
+		assert.Equal(t, expectedConfig, cfg)
+
+		closeFile(t, tempFile)
+	})
 }
 
-func createTempFile() (*os.File, error) {
+func createTempFile(t *testing.T, fileContent string) *os.File {
+	t.Helper()
 
 	tempFile, err := os.CreateTemp("", "config.toml")
-	if err != nil {
-		return nil, err
-	}
+	require.NoError(t, err)
 
-	defer os.Remove(tempFile.Name())
+	_, err = tempFile.WriteString(fileContent)
+	require.NoError(t, err)
 
-	_, err = tempFile.WriteString(configContent)
-	if err != nil {
-		return nil, err
-	}
+	return tempFile
+}
 
-	return tempFile, nil
+func closeFile(t *testing.T, file *os.File) {
+	t.Helper()
+
+	err := file.Close()
+	require.NoError(t, err)
+
+	err = os.Remove(file.Name())
+	require.NoError(t, err)
 }

@@ -35,7 +35,6 @@ type CsvMatcher struct {
 // Insert a CsvFile for the non encoded data.
 // Insert a CsvFile for Csv MD5 encoded data to check matches.
 func NewCsvMatcher(dataCsv CsvFile, encodedCsv CsvFile, outputPath string, encodedColumn int) CsvMatcher {
-
 	return CsvMatcher{
 		dataCsv:       dataCsv,
 		encodedCsv:    encodedCsv,
@@ -79,7 +78,6 @@ func (m *CsvMatcher) open() error {
 // Match is run to find field matches between Csv data file and Csv MD5 encoded data file
 // It will generate a new Csv file with the data file rows that matched with the encoded ones.
 func (m *CsvMatcher) Match() error {
-
 	err := m.open()
 	if err != nil {
 		return err
@@ -132,8 +130,16 @@ func (m *CsvMatcher) Match() error {
 	}
 
 	err = m.encodedCsv.file.Close()
+	if err != nil {
+		return err
+	}
 
-	return err
+	err = m.writerCsv.close()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func md5Convert(field string) string {
