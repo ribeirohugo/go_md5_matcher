@@ -28,52 +28,6 @@ var outputFile = `202cb962ac59075b964b07152d234b70;123;123
 202cb962ac59075b964b07152d234b70;123;123
 `
 
-func TestCsvMatcher_Match(t *testing.T) {
-	t.Run("should return no error", func(t *testing.T) {
-		t.Run("should match", func(t *testing.T) {
-			// Load Data CSV File
-			dataCsvFile, _ := createTempFile(dataCsvName, dataFile)
-			dataFileName := dataCsvFile.Name()
-			defer os.Remove(dataFileName)
-
-			// Load Encoded Data CSV File
-			encodedCsvFile, _ := createTempFile(encodedCsvName, encodedFile)
-			encodedFileName := encodedCsvFile.Name()
-			defer os.Remove(encodedFileName)
-
-			// Load Encoded Data CSV File
-			outputCsvFile, _ := createTempFile(outputCsvName, "")
-			outputFileName := outputCsvFile.Name()
-			defer os.Remove(outputFileName)
-
-			dataCsv := CsvFile{
-				Delimiter:   delimiter,
-				FilePath:    dataFileName,
-				MatchColumn: 1,
-			}
-
-			encodedCsv := CsvFile{
-				Delimiter:   delimiter,
-				FilePath:    encodedFileName,
-				MatchColumn: 1,
-			}
-
-			matcher := NewCsvMatcher(dataCsv, encodedCsv, outputFileName, encodedColumn)
-
-			err := matcher.Match()
-			assert.Nil(t, err)
-
-			contentBytes, err := os.ReadFile(outputFileName)
-			require.NoError(t, err)
-			assert.Equal(t, outputFile, string(contentBytes))
-
-			dataCsvFile.Close()
-			encodedCsvFile.Close()
-			outputCsvFile.Close()
-		})
-	})
-}
-
 func TestNewCsvMatcher(t *testing.T) {
 	t.Run("should create a CsvMatcher successfully", func(t *testing.T) {
 		const (
@@ -114,6 +68,52 @@ func TestNewCsvMatcher(t *testing.T) {
 
 		matcher := NewCsvMatcher(dataCsv, encodedCsv, outputFileName, encodedColumn)
 		assert.Equal(t, expected, matcher)
+	})
+}
+
+func TestCsvMatcher_Match(t *testing.T) {
+	t.Run("should return no error", func(t *testing.T) {
+		t.Run("should match", func(t *testing.T) {
+			// Load Data CSV File
+			dataCsvFile, err := createTempFile(dataCsvName, dataFile)
+			require.NoError(t, err)
+			dataFileName := dataCsvFile.Name()
+
+			// Load Encoded Data CSV File
+			encodedCsvFile, err := createTempFile(encodedCsvName, encodedFile)
+			require.NoError(t, err)
+			encodedFileName := encodedCsvFile.Name()
+
+			// Load Encoded Data CSV File
+			outputCsvFile, err := createTempFile(outputCsvName, "")
+			require.NoError(t, err)
+			outputFileName := outputCsvFile.Name()
+
+			dataCsv := CsvFile{
+				Delimiter:   delimiter,
+				FilePath:    dataFileName,
+				MatchColumn: 1,
+			}
+
+			encodedCsv := CsvFile{
+				Delimiter:   delimiter,
+				FilePath:    encodedFileName,
+				MatchColumn: 1,
+			}
+
+			matcher := NewCsvMatcher(dataCsv, encodedCsv, outputFileName, encodedColumn)
+
+			err = matcher.Match()
+			require.Nil(t, err)
+
+			contentBytes, err := os.ReadFile(outputFileName)
+			require.NoError(t, err)
+			assert.Equal(t, outputFile, string(contentBytes))
+
+			closeFile(t, dataCsvFile)
+			closeFile(t, encodedCsvFile)
+			closeFile(t, outputCsvFile)
+		})
 	})
 }
 
